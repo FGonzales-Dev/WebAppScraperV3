@@ -1,0 +1,187 @@
+    {% extends 'base.html' %}
+
+    {% block title%}
+    main page
+    {% endblock title%}
+
+    {% block content%}
+
+    <form method="POST" style="margin-top: 20px; display:flex;">
+        {% csrf_token %}
+        <input  type="text" name="stock" placeholder="Stock Ticker">
+        <input  type="text" name="market" placeholder="Stock Market">
+        <input class="button" type="submit" value="Search">
+    <!-- 
+        <input id="your_name" type="text" name="your_name">
+        <input type="submit" value="OK"> -->
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">2012</th>
+                <th scope="col">2013</th>
+                <th scope="col">2014</th>
+                <th scope="col">2015</th>
+                <th scope="col">2016</th>
+                <th scope="col">2017</th>
+                <th scope="col">2018</th>
+                <th scope="col">2019</th>
+                <th scope="col">2020</th>
+                <th scope="col">2021</th>
+                <th scope="col">TTM</th>
+            
+                
+            </tr>
+        </thead>
+
+
+        <tbody>
+
+            {%if data %}
+            <!-- <h3>{{data}}</h3> -->
+                {%for k,v in data.items%}
+                {% for obj in v%}
+                <tr>
+                    <td class="align-middle">{{obj.name}} </td> 
+                    <td class="align-middle">{{obj.year_one}} </td> 
+                    <td class="align-middle">{{obj.year_two}} </td> 
+                    <td class="align-middle">{{obj.year_three}} </td> 
+                    <td class="align-middle">{{obj.year_four}} </td> 
+                    <td class="align-middle">{{obj.year_five}} </td> 
+                    <td class="align-middle">{{obj.year_six}} </td> 
+                    <td class="align-middle">{{obj.year_seven}} </td> 
+                    <td class="align-middle">{{obj.year_eight}} </td> 
+                    <td class="align-middle">{{obj.year_nine}} </td> 
+                    <td class="align-middle">{{obj.year_ten}} </td> 
+                    <td class="align-middle">{{obj.year_ttm}} </td> 
+                </tr>
+            {%endfor%}
+            {%endfor%}
+
+
+
+            {%else %}
+            <h3>Nothing here...</h3>
+            {%endif%}
+        </tbody>
+
+    </table>
+    <!-- {%if dateTitles %}
+        {%for dateTitle in dateTitles %}  
+        <h3>{{ dateTitle }}</h3>
+        {%endfor%}
+
+    {%else %}
+            <h3>Nothing here...</h3>
+    {%endif%} -->
+
+    <div class="container">
+        <div class="row">  
+            <div class="col-4" >
+                <div class="card">
+                    <div class="card-body">
+                <h4> Gross Margin </h4>
+                <h5> 10 year average: {{ten_year_ave_gm}} </h5>
+                <h5> Rating: {{gross_margin_rating}}</h5>
+                <h5> Score: {{gross_margin_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Depreciation </h4>
+                <h5> Rating: {{depreciation_rating}}</h5>
+                <h5> Score: {{dep_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> SGA as % of gross profit </h4>
+                <h5> Rating: {{sga_rating}}</h5>
+                <h5> Score: {{sga_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Interest Expense </h4>
+                <h5> Rating: {{interest_expense_rating}}</h5>
+                <h5> Score: {{interest_expense_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Research and Development </h4>
+                <h5> Rating: {{research_and_dev_rating}}</h5>
+                <h5> Score: {{research_and_dev_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Cash and cash equivalents </h4>
+                <h5> Rating: {{cash_and_cash_equivalents_rating}}</h5>
+                <h5> Score: {{cash_and_cash_equivalents_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Short term debt </h4>
+                <h5> Rating: {{short_term_debt_rating}}</h5>
+                <h5> Score: {{short_term_debt_rating_score}}</h5>
+                </div>
+                </div>
+                
+            </div>
+
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Long term debt </h4>
+                <h5> Rating: {{long_term_debt_rating}}</h5>
+                <h5> Score: {{long_term_debt_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+
+
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                <h4> Property plant and equipment </h4>
+                <h5> Rating: {{property_plant_and_equi_rating}}</h5>
+                <h5> Score: {{property_plant_and_equi_rating_score}}</h5>
+                </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    {% endblock content%}
+    {% block scripts%}
+    {% endblock scripts%}
