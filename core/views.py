@@ -15,7 +15,7 @@ def index(request):
     url = f"https://infinite-island-12707.herokuapp.com/stock_history_key_ratio_json?ticker={search_stock}&market={search_market}&type=cf"
     income_statement_url = f"https://infinite-island-12707.herokuapp.com/stock_income_statement_json?ticker={search_stock}&market={search_market}&type=cf"
     cash_flow_url = f"https://infinite-island-12707.herokuapp.com/stock_cash_flow_json?ticker={search_stock}&market={search_market}&type=cf"
-    balance_sheet_url = f"https://infinite-island-12707.herokuapp.com/stock_balance_sheet_json?ticker={search_stock}&market={search_market}&type=cf"
+    balance_sheet_url = f"https://infinite-island-12707.herokuapp.com/stock_balance_sheet_json?ticker={search_stock}&market={search_market}&type=bs"
 
 
     balance_sheet_requestData = requests.get(balance_sheet_url).json()
@@ -35,13 +35,15 @@ def index(request):
     income_statement_data = json.loads(income_statement_json)
 
 
-    #GETIING THE Research and development LOCATION IN API
+#GETIING THE Research and development LOCATION IN API
     research_and_dev_loc = 0
     try:
      while income_statement_data['data'][research_and_dev_loc]['name'] != 'Research and development':
         research_and_dev_loc += 1
     except IndexError:
         research_and_dev_loc = 999
+    
+   
 
 #GETIING THE Common stock repurchased LOCATION IN API
     common_stock_repurchased_loc = 0
@@ -50,8 +52,6 @@ def index(request):
         common_stock_repurchased_loc += 1
     except IndexError:
         common_stock_repurchased_loc = 999
-
-
     
 #GETIING THE Total stockholders equity LOCATION IN API
     total_stockholders_equity_loc = 0
@@ -61,13 +61,14 @@ def index(request):
     except IndexError:
         total_stockholders_equity_loc = 999
 
-   #GETIING THE Cash and equivalents LOCATION IN API
+#GETIING THE Cash and equivalents LOCATION IN API
     cash_and_equivalents_loc = 0
     try:
      while balance_sheet_data['data'][cash_and_equivalents_loc]['name'] != 'Cash and cash equivalents':
         cash_and_equivalents_loc += 1
     except IndexError:
         cash_and_equivalents_loc = 999
+
  #GETIING THE  Property plant and equipment LOCATION IN API
     property_plant_and_equi_loc = 0
     try:
@@ -75,33 +76,53 @@ def index(request):
         property_plant_and_equi_loc += 1
     except IndexError:
         property_plant_and_equi_loc = 999
+
+ #GETIING THE  Retained earnings LOCATION IN API
+    retained_earnings_loc = 0
+    try:
+     while balance_sheet_data['data'][retained_earnings_loc]['name'] != 'Retained earnings':
+        retained_earnings_loc += 1
+    except IndexError:
+        retained_earnings_loc = 999
+
+ #GETIING THE Treasury stock LOCATION IN API
+    treasury_stock_loc = 0
+    try:
+     while balance_sheet_data['data'][treasury_stock_loc]['name'] != 'Treasury stock':
+        treasury_stock_loc += 1
+    except IndexError:
+        treasury_stock_loc = 999
+      
   
-    #GETIING THE Long-term debt LOCATION IN API
+#GETIING THE Long-term debt LOCATION IN API
     long_term_debt_loc = 0
-    while balance_sheet_data['data'][long_term_debt_loc]['name'] != 'Long-term debt':
+    try:
+     while balance_sheet_data['data'][long_term_debt_loc]['name'] != 'Long-term debt':
         long_term_debt_loc += 1
-        
-    #GETIING THE Short-term debt LOCATION IN API 
+    except IndexError:
+        long_term_debt_loc = 999
+ 
+#GETIING THE Short-term debt LOCATION IN API 
     short_term_debt_loc = 0
     while balance_sheet_data['data'][short_term_debt_loc]['name'] != 'Short-term debt':
         short_term_debt_loc += 1
 
-    #GETIING THE Interest Expense LOCATION IN API
+#GETIING THE Interest Expense LOCATION IN API
     interest_expense_loc = 0
     while income_statement_data['data'][interest_expense_loc]['name'] != 'Interest Expense':
         interest_expense_loc += 1
 
-    #GETIING THE Interest Expense LOCATION IN API
+#GETIING THE Interest Expense LOCATION IN API
     net_income_loc = 0
     while income_statement_data['data'][net_income_loc]['name'] != 'Net income':
         net_income_loc += 1
         
-    # GETTING THE Operating income LOCATION IN API
+# GETTING THE Operating income LOCATION IN API
     operating_income_loc = 0
     while income_statement_data['data'][operating_income_loc]['name'] != 'Operating income':
         operating_income_loc += 1
 
-    #GETTING THE Sales General and administrative LOCATION IN API
+#GETTING THE Sales General and administrative LOCATION IN API
     sales_gen_and_admin_loc = 0
     while income_statement_data['data'][sales_gen_and_admin_loc]['name'] != 'Sales General and administrative':
         sales_gen_and_admin_loc += 1
@@ -121,6 +142,8 @@ def index(request):
     year_nine_sga_per_gp  = float(income_statement_data['data'][sales_gen_and_admin_loc]['year_nine']) / float(income_statement_data['data'][3]['year_nine'])
     year_ten_sga_per_gp  = float(income_statement_data['data'][sales_gen_and_admin_loc]['year_ten']) / float(income_statement_data['data'][3]['year_ten'])
 
+   
+ 
     #5 year avearage of Cash and cash equivalents
     cash_and_equivalents_ave = (float(balance_sheet_data['data'][cash_and_equivalents_loc]['year_six'])+float(balance_sheet_data['data'][cash_and_equivalents_loc]['year_seven'])+float(balance_sheet_data['data'][cash_and_equivalents_loc]['year_eight'])+float(balance_sheet_data['data'][cash_and_equivalents_loc]['year_nine'])+float(balance_sheet_data['data'][cash_and_equivalents_loc]['year_ten']))/5
     
@@ -141,11 +164,70 @@ def index(request):
     interest_expense_ave = (float(income_statement_data['data'][interest_expense_loc]['year_six'])+float(income_statement_data['data'][interest_expense_loc]['year_seven'])+float(income_statement_data['data'][interest_expense_loc]['year_eight'])+float(income_statement_data['data'][interest_expense_loc]['year_nine'])+float(income_statement_data['data'][interest_expense_loc]['year_ten']))/5
     #5 year average of Operating Income
     operating_income_ave = (float(income_statement_data['data'][operating_income_loc]['year_six'])+float(income_statement_data['data'][operating_income_loc]['year_seven'])+float(income_statement_data['data'][operating_income_loc]['year_eight'])+float(income_statement_data['data'][operating_income_loc]['year_nine'])+float(income_statement_data['data'][operating_income_loc]['year_ten']))/5
-    #5 year average of Research and development
-    research_and_dev_ave = (float(income_statement_data['data'][research_and_dev_loc]['year_six'])+float(income_statement_data['data'][research_and_dev_loc]['year_seven'])+float(income_statement_data['data'][research_and_dev_loc]['year_eight'])+float(income_statement_data['data'][research_and_dev_loc]['year_nine'])+float(income_statement_data['data'][research_and_dev_loc]['year_ten']))/5
     #5 year average of Net income
     net_income_ave = (float(income_statement_data['data'][net_income_loc]['year_six'])+float(income_statement_data['data'][net_income_loc]['year_seven'])+float(income_statement_data['data'][net_income_loc]['year_eight'])+float(income_statement_data['data'][net_income_loc]['year_nine'])+float(income_statement_data['data'][net_income_loc]['year_ten']))/5
 
+
+
+
+
+     #5 year average of Research and development
+    if research_and_dev_loc != 999:
+        research_and_dev_ave = (float(income_statement_data['data'][research_and_dev_loc]['year_six'])+float(income_statement_data['data'][research_and_dev_loc]['year_seven'])+float(income_statement_data['data'][research_and_dev_loc]['year_eight'])+float(income_statement_data['data'][research_and_dev_loc]['year_nine'])+float(income_statement_data['data'][research_and_dev_loc]['year_ten']))/5
+        #GETTING THE RATING OF Research and development
+        research_and_dev_score =(research_and_dev_ave /gross_profit_ave )*100
+        research_and_dev_score = research_and_dev_score / 10
+        research_and_dev_rating_score = 10 - research_and_dev_score
+        research_and_dev_rating_score = round(research_and_dev_rating_score,2)
+        research_and_dev_rating = ""
+        if research_and_dev_rating_score >= 8.0:
+            research_and_dev_rating = "EXCELLENT"
+        elif research_and_dev_rating_score >= 7.9 and research_and_dev_rating_score >= 6.5:
+            research_and_dev_rating = "GOOD"
+        elif research_and_dev_rating_score <= 6.5 and research_and_dev_rating_score >= 4.0:
+            research_and_dev_rating = "OK"
+        elif research_and_dev_rating_score <= 4.0:
+            research_and_dev_rating="NOT GREAT"
+    else:
+        research_and_dev_rating = ""
+        research_and_dev_rating_score = 0.0
+
+    #5 year average of Treasury Stock
+    treasury_stock_ave = 0
+    num_of_year_of_treasury_stock = 0
+    if treasury_stock_loc != 999:
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_six']) != 0:
+            treasury_stock_ave = treasury_stock_ave + abs(float(balance_sheet_data['data'][treasury_stock_loc]['year_six']))
+            num_of_year_of_treasury_stock = num_of_year_of_treasury_stock + 1
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_seven']) != 0:
+            treasury_stock_ave = treasury_stock_ave + abs(float(balance_sheet_data['data'][treasury_stock_loc]['year_seven']))
+            num_of_year_of_treasury_stock = num_of_year_of_treasury_stock + 1
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_eight']) != 0:
+            treasury_stock_ave = treasury_stock_ave +  abs(float(balance_sheet_data['data'][treasury_stock_loc]['year_eight']))
+            num_of_year_of_treasury_stock = num_of_year_of_treasury_stock + 1
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_nine']) != 0:
+            treasury_stock_ave = treasury_stock_ave +  abs(float(balance_sheet_data['data'][treasury_stock_loc]['year_nine']))
+            num_of_year_of_treasury_stock = num_of_year_of_treasury_stock + 1
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_ten']) != 0:
+            treasury_stock_ave = treasury_stock_ave +  abs(float(balance_sheet_data['data'][treasury_stock_loc]['year_ten']))
+            num_of_year_of_treasury_stock = num_of_year_of_treasury_stock + 1
+
+        treasury_stock_ave = treasury_stock_ave / num_of_year_of_treasury_stock
+        treasury_stock_score = treasury_stock_ave /10
+        treasury_stock_rating_score = 10 - treasury_stock_score
+        treasury_stock_rating_score = round(treasury_stock_rating_score, 2)
+        treasury_stock_rating = ""
+        if treasury_stock_rating_score >= 8.0:
+            treasury_stock_rating = "EXCELLENT"
+        elif treasury_stock_rating_score >= 7.9 and treasury_stock_rating_score >= 6.5:
+            treasury_stock_rating = "GOOD"
+        elif treasury_stock_rating_score <= 6.5 and treasury_stock_rating_score >= 4.0:
+            treasury_stock_rating = "OK"
+        elif treasury_stock_rating_score <= 4.0:
+            treasury_stock_rating="NOT GREAT"
+    else:
+        treasury_stock_rating = ""
+        treasury_stock_rating_score = 0.0
 
 
     #GETTING THE RATING OF Property plant and equipment
@@ -211,20 +293,7 @@ def index(request):
         long_term_debt_rating="NOT GREAT"
 
 
-    #GETTING THE RATING OF Research and development
-    research_and_dev_score =(research_and_dev_ave /gross_profit_ave )*100
-    research_and_dev_score = research_and_dev_score / 10
-    research_and_dev_rating_score = 10 - research_and_dev_score
-    research_and_dev_rating_score = round(research_and_dev_rating_score,2)
-    research_and_dev_rating = ""
-    if research_and_dev_rating_score >= 8.0:
-        research_and_dev_rating = "EXCELLENT"
-    elif research_and_dev_rating_score >= 7.9 and research_and_dev_rating_score >= 6.5:
-        research_and_dev_rating = "GOOD"
-    elif research_and_dev_rating_score <= 6.5 and research_and_dev_rating_score >= 4.0:
-        research_and_dev_rating = "OK"
-    elif research_and_dev_rating_score <= 4.0:
-        research_and_dev_rating="NOT GREAT"
+  
 
     #GETTING THE RATING OF Interest expense as % of operating income
     interest_expense_score = (interest_expense_ave / operating_income_ave) * 100
@@ -311,13 +380,19 @@ def index(request):
         requestData.append(balance_sheet_data['data'][property_plant_and_equi_loc])
     if net_income_loc != 999:
         requestData.append(income_statement_data['data'][net_income_loc])
+    if treasury_stock_loc != 999:
+        requestData.append(balance_sheet_data['data'][treasury_stock_loc])
+    if long_term_debt_loc != 999:
+        requestData.append(balance_sheet_data['data'][long_term_debt_loc])    
+
 
 
     if common_stock_repurchased_loc != 999:
         requestData.append(cash_flow_data['data'][common_stock_repurchased_loc])
         
     requestData.append(cash_flow_data['data'][3]) # Depreciation & amortization
-    requestData.append(balance_sheet_data['data'][long_term_debt_loc])
+  
+
     requestData.append(balance_sheet_data['data'][short_term_debt_loc])
     requestData.append(depreciation_as_percent_of_gross_profit)
     requestData.append(sga_as_percent_of_gross_profit)
@@ -413,5 +488,7 @@ def index(request):
                                                 'long_term_debt_rating_score': long_term_debt_rating_score,
                                                 'long_term_debt_rating': long_term_debt_rating,
                                                 'property_plant_and_equi_rating_score': property_plant_and_equi_rating_score,
-                                                'property_plant_and_equi_rating': property_plant_and_equi_rating})
+                                                'property_plant_and_equi_rating': property_plant_and_equi_rating,
+                                                'treasury_stock_rating_score':treasury_stock_rating_score,
+                                                'treasury_stock_rating' : treasury_stock_rating})
      
