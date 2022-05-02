@@ -169,9 +169,35 @@ def index(request):
 
 
 
+    #4 year average of Retained earning
+    if retained_earnings_loc != 999:
+        first_computation = 1-(float(balance_sheet_data['data'][retained_earnings_loc]['year_six'])/float(balance_sheet_data['data'][retained_earnings_loc]['year_seven']))
+        second_computation = 1-(float(balance_sheet_data['data'][retained_earnings_loc]['year_seven'])/float(balance_sheet_data['data'][retained_earnings_loc]['year_eight']))
+        third_computation = 1-(float(balance_sheet_data['data'][retained_earnings_loc]['year_eight'])/float(balance_sheet_data['data'][retained_earnings_loc]['year_nine']))
+        fourth_computation = 1-(float(balance_sheet_data['data'][retained_earnings_loc]['year_nine'])/float(balance_sheet_data['data'][retained_earnings_loc]['year_ten']))
+        retaine_earning_ave = (first_computation+second_computation+third_computation+fourth_computation)/4
+        retained_earning_score = retaine_earning_ave/10
+        retained_earning_rating_score = 10 - retained_earning_score
+        retained_earning_rating_score = round(retained_earning_rating_score,2)
+        retained_earning_rating = ""
+        if  retained_earning_rating_score >= 8.0:
+            retained_earning_rating = "EXCELLENT"
+        elif  retained_earning_rating_score >= 7.9 and  retained_earning_rating_score >= 6.5:
+            retained_earning_rating = "GOOD"
+        elif  retained_earning_rating_score <= 6.5 and  retained_earning_rating_score >= 4.0:
+            retained_earning_rating = "OK"
+        elif  retained_earning_rating_score <= 4.0:
+            retained_earning_rating="NOT GREAT"
+    else:
+        retained_earning_rating = ""
+        retained_earning_rating_score = 0.0
 
 
-     #5 year average of Research and development
+
+        
+
+
+    #5 year average of Research and development
     if research_and_dev_loc != 999:
         research_and_dev_ave = (float(income_statement_data['data'][research_and_dev_loc]['year_six'])+float(income_statement_data['data'][research_and_dev_loc]['year_seven'])+float(income_statement_data['data'][research_and_dev_loc]['year_eight'])+float(income_statement_data['data'][research_and_dev_loc]['year_nine'])+float(income_statement_data['data'][research_and_dev_loc]['year_ten']))/5
         #GETTING THE RATING OF Research and development
@@ -490,5 +516,6 @@ def index(request):
                                                 'property_plant_and_equi_rating_score': property_plant_and_equi_rating_score,
                                                 'property_plant_and_equi_rating': property_plant_and_equi_rating,
                                                 'treasury_stock_rating_score':treasury_stock_rating_score,
-                                                'treasury_stock_rating' : treasury_stock_rating})
-     
+                                                'treasury_stock_rating' : treasury_stock_rating,
+                                                'retained_earning_rating_score':retained_earning_rating_score,
+                                                'retained_earning_rating' : retained_earning_rating})
