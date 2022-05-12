@@ -34,6 +34,22 @@ def index(request):
     income_statement_json = json.dumps(is_context)
     income_statement_data = json.loads(income_statement_json)
 
+#GETTING THE Total Liabilities LOCATION IN API
+    total_liabilities_loc = 0 
+    try:
+     while balance_sheet_data['data'][total_liabilities_loc]['name'] != 'Total liabilities':
+        total_liabilities_loc += 1
+    except IndexError:
+        total_liabilities_loc = 999
+
+#GETTING THE Total stockholders' equity LOCATION IN API
+    total_stockholders_equity_loc = 0 
+    try:
+     while balance_sheet_data['data'][total_stockholders_equity_loc]['name'] != "Total stockholders' equity":
+        total_stockholders_equity_loc += 1
+    except IndexError:
+        total_stockholders_equity_loc = 999
+
 
 #GETIING THE Research and development LOCATION IN API
     research_and_dev_loc = 0
@@ -53,13 +69,7 @@ def index(request):
     except IndexError:
         common_stock_repurchased_loc = 999
     
-#GETIING THE Total stockholders equity LOCATION IN API
-    total_stockholders_equity_loc = 0
-    try:
-     while balance_sheet_data['data'][total_stockholders_equity_loc]['name'] != 'Total stockholders equity':
-        total_stockholders_equity_loc += 1
-    except IndexError:
-        total_stockholders_equity_loc = 999
+
 
 #GETIING THE Cash and equivalents LOCATION IN API
     cash_and_equivalents_loc = 0
@@ -168,7 +178,67 @@ def index(request):
     net_income_ave = (float(income_statement_data['data'][net_income_loc]['year_six'])+float(income_statement_data['data'][net_income_loc]['year_seven'])+float(income_statement_data['data'][net_income_loc]['year_eight'])+float(income_statement_data['data'][net_income_loc]['year_nine'])+float(income_statement_data['data'][net_income_loc]['year_ten']))/5
 
 
+    #5 year Total Liabilities & Debt to Shareholders Equity Ratio
+    if treasury_stock_loc != 999:
+     
+  
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_six']) != 0:
+            treasury_stock_year_six = float(balance_sheet_data['data'][treasury_stock_loc]['year_six'])
+        else:
+            treasury_stock_year_six = 0
 
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_seven']) != 0:
+            treasury_stock_year_seven = float(balance_sheet_data['data'][treasury_stock_loc]['year_seven'])
+        else:
+            treasury_stock_year_seven = 0
+        
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_eight']) != 0:
+            treasury_stock_year_eight = float(balance_sheet_data['data'][treasury_stock_loc]['year_eight'])
+        else:
+            treasury_stock_year_eight = 0
+        
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_nine']) != 0:
+            treasury_stock_year_nine = float(balance_sheet_data['data'][treasury_stock_loc]['year_nine'])
+        else:
+            treasury_stock_year_nine = 0
+        
+        if float(balance_sheet_data['data'][treasury_stock_loc]['year_ten']) != 0:
+            treasury_stock_year_ten = float(balance_sheet_data['data'][treasury_stock_loc]['year_ten'])
+        else:
+            treasury_stock_year_ten = 0
+    else :
+         treasury_stock_year_six = 0
+         treasury_stock_year_seven = 0
+         treasury_stock_year_eight = 0
+         treasury_stock_year_nine = 0
+         treasury_stock_year_ten = 0
+
+
+
+   
+
+    first_computation =  float(balance_sheet_data['data'][total_liabilities_loc]['year_six'])/(float(balance_sheet_data['data'][total_stockholders_equity_loc]['year_six']) +  -treasury_stock_year_six)
+    second_computation =  float(balance_sheet_data['data'][total_liabilities_loc]['year_seven'])/(float(balance_sheet_data['data'][total_stockholders_equity_loc]['year_seven']) +  -treasury_stock_year_seven)
+    third_computation =  float(balance_sheet_data['data'][total_liabilities_loc]['year_eight'])/(float(balance_sheet_data['data'][total_stockholders_equity_loc]['year_eight']) +  -treasury_stock_year_eight) 
+    fourth_computation =  float(balance_sheet_data['data'][total_liabilities_loc]['year_nine'])/(float(balance_sheet_data['data'][total_stockholders_equity_loc]['year_nine']) +  -treasury_stock_year_nine) 
+    fifth_computation =  float(balance_sheet_data['data'][total_liabilities_loc]['year_ten'])/(float(balance_sheet_data['data'][total_stockholders_equity_loc]['year_ten']) +  -treasury_stock_year_ten) 
+        
+    total_liabilities_and_debt_ave = (first_computation+ second_computation+third_computation + fourth_computation+ fifth_computation)/ 5
+    total_liabilities_and_debt_ave_rating_score = round(total_liabilities_and_debt_ave,2)
+    total_liabilities_and_debt_ave_rating = ""
+    if  total_liabilities_and_debt_ave_rating_score >= 8.0:
+                total_liabilities_and_debt_ave_rating = "EXCELLENT"
+    elif  total_liabilities_and_debt_ave_rating_score >= 7.9 and  total_liabilities_and_debt_ave_rating_score >= 6.5:
+                total_liabilities_and_debt_ave_rating = "GOOD"
+    elif  total_liabilities_and_debt_ave_rating_score <= 6.5 and  total_liabilities_and_debt_ave_rating_score >= 4.0:
+                total_liabilities_and_debt_ave_rating = "OK"
+    elif  total_liabilities_and_debt_ave_rating_score <= 4.0:
+                total_liabilities_and_debt_ave_rating="NOT GREAT"
+    else:
+        total_liabilities_and_debt_ave_rating = ""
+        total_liabilities_and_debt_ave_rating_score = 0.0
+
+        
     #4 year average of Retained earning
     if retained_earnings_loc != 999:
         first_computation = 1-(float(balance_sheet_data['data'][retained_earnings_loc]['year_six'])/float(balance_sheet_data['data'][retained_earnings_loc]['year_seven']))
@@ -518,4 +588,6 @@ def index(request):
                                                 'treasury_stock_rating_score':treasury_stock_rating_score,
                                                 'treasury_stock_rating' : treasury_stock_rating,
                                                 'retained_earning_rating_score':retained_earning_rating_score,
-                                                'retained_earning_rating' : retained_earning_rating})
+                                                'retained_earning_rating' : retained_earning_rating,
+                                                'total_liabilities_and_debt_ave_rating' :total_liabilities_and_debt_ave_rating,
+                                                'total_liabilities_and_debt_ave_rating_score' : total_liabilities_and_debt_ave_rating_score})
